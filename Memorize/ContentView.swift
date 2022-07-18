@@ -32,7 +32,7 @@ struct ContentView: View {
                 ForEach(ContentView.themes) { theme in
                     ThemeButton(name: theme.name, icon: theme.icon) {
                         emojis = theme.emojis.shuffled()
-                        emojiCount = theme.emojis.count
+                        emojiCount = Int.random(in: 4..<theme.emojis.count)
                     }
                     if theme != ContentView.themes.last {
                         Spacer()
