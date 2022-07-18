@@ -8,8 +8,13 @@
 import SwiftUI
 
 struct ContentView: View {
-    var emojis = ["🚗", "✈️", "🚲", "⛵️", "🚌", "🚁", "🚀", "🛸", "🚇", "👻", "🎃", "🕷", "💀", "😱", "🧟", "🦇", "🪦", "🩸", "🔮", "🕯", "🧛"]
+    @State var emojis = ["🚗", "✈️", "🚲", "⛵️", "🚌", "🚁", "🚀", "🛸", "🚇", "👻", "🎃", "🕷", "💀", "😱", "🧟", "🦇", "🪦", "🩸", "🔮", "🕯", "🧛"]
     @State var emojiCount = 14
+    private static let themes: [Theme] = [
+            Theme(name: "Faces", icon: "face.smiling", emojis: ["😀", "😢", "😉", "😂", "😊", "🤪", "😍", "🥳", "🤩"]),
+            Theme(name: "Food", icon: "cart", emojis: ["🍏", "🍆", "🍒", "🍇", "🍓", "🫐", "🌽", "🥩", "🍝", "🍔"]),
+            Theme(name: "Transport", icon: "car", emojis: ["🚗", "✈️", "🚲", "⛵️", "🚌", "🚁", "🚀", "🛸", "🚇"])
+        ]
     
     var body: some View {
         VStack {
@@ -23,34 +28,43 @@ struct ContentView: View {
             }
             .foregroundColor(.red)
             Spacer()
-            HStack {
-                remove
-                Spacer()
-                add
+            HStack() {
+                ForEach(ContentView.themes) { theme in
+                    ThemeButton(name: theme.name, icon: theme.icon) {
+                        emojis = theme.emojis.shuffled()
+                        emojiCount = theme.emojis.count
+                    }
+                    if theme != ContentView.themes.last {
+                        Spacer()
+                    }
+                }
             }
-            .font(.largeTitle)
             .padding(.horizontal)
         }
         .padding(.horizontal)
     }
+}
+
+struct Theme: Equatable, Identifiable {
+    var id = UUID()
     
-    var remove: some View {
+    let name: String
+    let icon: String
+    let emojis: [String]
+}
+
+struct ThemeButton: View {
+    let name: String
+    let icon: String
+    let action: () -> Void
+    var body: some View {
         Button {
-            if emojiCount > 1 {
-                emojiCount -= 1
-            }
+            action()
         } label: {
-            Image(systemName: "minus.circle")
-        }
-    }
-    
-    var add: some View {
-        Button {
-            if emojiCount < emojis.count {
-                emojiCount += 1
+            VStack {
+                Image(systemName: icon).font(.largeTitle)
+                Text(name).font(.caption)
             }
-        } label: {
-            Image(systemName: "plus.circle")
         }
     }
 }
@@ -75,6 +89,8 @@ struct CardView: View {
         }
     }
 }
+
+// MARK: Previews
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
