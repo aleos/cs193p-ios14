@@ -10,16 +10,9 @@ import SwiftUI
 struct ContentView: View {
     @ObservedObject var viewModel: EmojiMemoryGame
     
-    @State var emojiCount = 14
-    private static let themes: [Theme] = [
-            Theme(name: "Faces", icon: "face.smiling", emojis: ["😀", "😢", "😉", "😂", "😊", "🤪", "😍", "🥳", "🤩"]),
-            Theme(name: "Food", icon: "cart", emojis: ["🍏", "🍆", "🍒", "🍇", "🍓", "🫐", "🌽", "🥩", "🍝", "🍔"]),
-            Theme(name: "Transport", icon: "car", emojis: ["🚗", "✈️", "🚲", "⛵️", "🚌", "🚁", "🚀", "🛸", "🚇"])
-        ]
-    
     var body: some View {
         VStack {
-            Text("Memorize!").font(.largeTitle)
+            Text(viewModel.theme.name).font(.largeTitle)
             ScrollView {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
                     ForEach(viewModel.cards) { card in
@@ -33,18 +26,11 @@ struct ContentView: View {
             }
             .foregroundColor(.red)
             Spacer()
-//            HStack() {
-//                ForEach(ContentView.themes) { theme in
-//                    ThemeButton(name: theme.name, icon: theme.icon) {
-//                        emojis = theme.emojis.shuffled()
-//                        emojiCount = Int.random(in: 4..<theme.emojis.count)
-//                    }
-//                    if theme != ContentView.themes.last {
-//                        Spacer()
-//                    }
-//                }
-//            }
-//            .padding(.horizontal)
+            Button {
+                viewModel.newGame()
+            } label: {
+                Text("New Game").font(.largeTitle)
+            }
         }
         .padding(.horizontal)
     }
@@ -64,30 +50,6 @@ struct CardView: View {
                 shape.opacity(0)
             } else {
                 shape.fill()
-            }
-        }
-    }
-}
-
-struct Theme: Equatable, Identifiable {
-    var id = UUID()
-    
-    let name: String
-    let icon: String
-    let emojis: [String]
-}
-
-struct ThemeButton: View {
-    let name: String
-    let icon: String
-    let action: () -> Void
-    var body: some View {
-        Button {
-            action()
-        } label: {
-            VStack {
-                Image(systemName: icon).font(.largeTitle)
-                Text(name).font(.caption)
             }
         }
     }
