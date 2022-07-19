@@ -9,8 +9,17 @@ import Foundation
 
 struct MemoryGame<CardContent> where CardContent: Equatable {
     private(set) var cards: [Card]
+    private(set) var score = 0
     
     private var indexOfTheOneAndOnlyFaceUpCard: Int?
+    
+    private var timeOfLastPairChoice: Date?
+        private var scoreTimeMultiplier: Int {
+            guard let timeOfLastPairChoice = timeOfLastPairChoice else { return 1 } // without a multiplier at first
+            let timeInterval = Date().timeIntervalSince(timeOfLastPairChoice)
+            return max(10 - Int(timeInterval.rounded()), 1)
+        }
+
     
     mutating func choose(_ card: Card) {
         if let chosenIndex = cards.firstIndex(where: { $0.id == card.id }),
@@ -21,8 +30,19 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
                 if cards[chosenIndex].content == cards[potentialMatchIndex].content {
                     cards[chosenIndex].isMatched = true
                     cards[potentialMatchIndex].isMatched = true
+                    incrementScore()
+                } else {
+                    if cards[chosenIndex].isSeen {
+                        decrementScore()
+                    }
+                    if cards[potentialMatchIndex].isSeen {
+                        decrementScore()
+                    }
                 }
                 indexOfTheOneAndOnlyFaceUpCard = nil
+                cards[chosenIndex].isSeen = true
+                cards[potentialMatchIndex].isSeen = true
+                timeOfLastPairChoice = Date()
             } else {
                 for index in cards.indices {
                     cards[index].isFaceUp = false
@@ -34,6 +54,16 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
         
         print(cards)
     }
+    
+    private mutating func incrementScore() {
+            score += 2 * scoreTimeMultiplier
+            print("Score time multiplier = \(scoreTimeMultiplier)")
+        }
+        
+        private mutating func decrementScore() {
+            score -= 1 * scoreTimeMultiplier
+            print("Score time multiplier = \(scoreTimeMultiplier)")
+        }
     
     init(numberOfPairsOfCards: Int, createCardContent: (Int) -> CardContent) {
         cards = [Card]()
@@ -49,6 +79,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     struct Card: Identifiable {
         var isFaceUp = false
         var isMatched = false
+        var isSeen = false
         var content: CardContent
         var id: Int
     }
