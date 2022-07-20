@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  EmojiMemoryGameView.swift
 //  Memorize
 //
 //  Created by Alexander Ostrovsky on 14.07.2022.
@@ -7,30 +7,30 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    @ObservedObject var viewModel: EmojiMemoryGame
+struct EmojiMemoryGameView: View {
+    @ObservedObject var game: EmojiMemoryGame
     
     var body: some View {
         VStack {
             HStack(alignment: .firstTextBaseline) {
-                Text(viewModel.themeName).font(.largeTitle)
-                Text("Score: \(viewModel.score)")
+                Text(game.themeName).font(.largeTitle)
+                Text("Score: \(game.score)")
             }
             ScrollView {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
-                    ForEach(viewModel.cards) { card in
+                    ForEach(game.cards) { card in
                         CardView(card: card)
                             .aspectRatio(2/3, contentMode: .fit)
                             .onTapGesture {
-                                viewModel.choose(card)
+                                game.choose(card)
                             }
                     }
                 }
             }
-            .foregroundColor(viewModel.themeForegroundColor)
+            .foregroundColor(game.themeForegroundColor)
             Spacer()
             Button {
-                viewModel.newGame()
+                game.newGame()
             } label: {
                 Text("New Game").font(.largeTitle)
             }
@@ -63,9 +63,9 @@ struct CardView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         let game = EmojiMemoryGame()
-        ContentView(viewModel: game)
+        EmojiMemoryGameView(game: game)
             .preferredColorScheme(.dark)
-        ContentView(viewModel: game)
+        EmojiMemoryGameView(game: game)
             .preferredColorScheme(.light)
     }
 }
