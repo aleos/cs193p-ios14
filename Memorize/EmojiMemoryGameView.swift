@@ -16,15 +16,16 @@ struct EmojiMemoryGameView: View {
                 Text(game.themeName).font(.largeTitle)
                 Text("Score: \(game.score)")
             }
-            ScrollView {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))]) {
-                    ForEach(game.cards) { card in
-                        CardView(card: card)
-                            .aspectRatio(2/3, contentMode: .fit)
-                            .onTapGesture {
-                                game.choose(card)
-                            }
-                    }
+            AspectVGrid(items: game.cards, aspectRatio: 2/3) { card in
+                if card.isMatched && !card.isFaceUp {
+                    Rectangle().opacity(0)
+                } else {
+                    CardView(card: card)
+                        .padding(4)
+                        .onTapGesture {
+                            game.choose(card)
+                        }
+                    
                 }
             }
             .foregroundColor(game.themeForegroundColor)
@@ -64,9 +65,9 @@ struct CardView: View {
     }
     
     private struct DrawingConstants {
-        static let cornerRadius = 20.0
+        static let cornerRadius = 10.0
         static let lineWidth = 3.0
-        static let fontScale = 0.8
+        static let fontScale = 0.75
     }
 }
 
