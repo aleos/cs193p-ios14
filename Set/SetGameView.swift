@@ -45,7 +45,7 @@ struct CardView: View {
 //                if card.isFaceUp {
                     shape.fill().foregroundColor(.white)
                     shape.strokeBorder(lineWidth: DrawingConstants.lineWidth)
-                Face().foregroundColor(.red)
+                Face(number: card.number, shape: card.shape, shading: card.shading, color: card.color)
 //                } else if card.isMatched {
 //                    shape.opacity(0)
 //                } else {
