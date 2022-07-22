@@ -10,7 +10,7 @@ import SwiftUI
 class SetGameViewModel: ObservableObject {
     typealias Card = SetGame.Card
     
-    private var game = SetGame()
+    @Published private var game = SetGame()
     
     var cards: [Card] { game.cards }
     var score: Int { game.score }

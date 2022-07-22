@@ -14,8 +14,11 @@ struct Face: View {
     let color: SetGame.Card.Color
     
     var body: some View {
-        OvalShape()
-            .foregroundColor(Color(from: color))
+        GeometryReader { geometry in
+            OvalShape()
+                .stroke(lineWidth: max(2.0, round(geometry.size.width / 100)))
+                .foregroundColor(Color(from: color))
+        }
 //        GeometryReader { geometry in
 //            Path() { path in
 //            }.foregroundColor(Color(from: color))
@@ -25,19 +28,32 @@ struct Face: View {
 
 struct OvalShape: Shape {
     var oval: Path {
-        var path = Path()
-        let center = CGPoint(x: 0.5, y: 0.5)
         let size = CGSize(width: 0.5, height: 0.25)
         
-        path.addRoundedRect(in: CGRect(x: center.x - size.width / 2, y: center.y - size.height / 2, width: size.width, height: size.height), cornerSize: CGSize(width: size.height / 2, height: size.height / 2))
+        var path = Path()
         
-        path = path.offsetBy(dx: -center.x, dy: -center.y)
+        path.addRoundedRect(in: CGRect(x: -size.width / 2, y: -size.height / 2, width: size.width, height: size.height), cornerSize: CGSize(width: size.height / 2, height: size.height / 2))
         
         return path
     }
+    
+    var diamond: Path {
+        let size = CGSize(width: 0.5, height: 0.25)
+
+        var path = Path()
+        
+        path.move(to: CGPoint(x: 0, y: -size.height / 2))
+        path.addLine(to: CGPoint(x: -size.width / 2, y: 0))
+        path.addLine(to: CGPoint(x: 0, y: size.height / 2))
+        path.addLine(to: CGPoint(x: size.width / 2, y: 0))
+        path.closeSubpath()
+        
+        return path
+    }
+    
     func path(in rect: CGRect) -> Path {
         var path = Path()
-        path.addPath(oval, transform: CGAffineTransform(translationX: rect.midX, y: rect.midY).scaledBy(x: rect.width, y: rect.width))
+        path.addPath(diamond, transform: CGAffineTransform(translationX: rect.midX, y: rect.midY).scaledBy(x: rect.width, y: rect.width))
         path.addPath(oval, transform: CGAffineTransform(translationX: rect.midX, y: rect.midY - rect.height / 5).scaledBy(x: rect.width, y: rect.width))
         path.addPath(oval, transform: CGAffineTransform(translationX: rect.midX, y: rect.midY + rect.height / 5).scaledBy(x: rect.width, y: rect.width))
         return path
