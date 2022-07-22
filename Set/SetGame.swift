@@ -8,7 +8,19 @@
 import Foundation
 
 struct SetGame {
-    private(set) var cards: [Card]
+    private(set) var cards: [Card] = {
+        var cards = [Card]()
+        Card.Number.allCases.forEach { number in
+            Card.Shape.allCases.forEach { shape in
+                Card.Shading.allCases.forEach { shading in
+                    Card.Color.allCases.forEach { color in
+                        cards.append(Card(number: number, shape: shape, shading: shading, color: color))
+                    }
+                }
+            }
+        }
+        return cards
+    }()
     private(set) var score = 0
     
     mutating func choose(_ card: Card) {
@@ -52,7 +64,7 @@ struct SetGame {
         var isChosen = false
                 
         // Identifiable conformance
-        let id: ObjectIdentifier
+        let id = UUID()
     }
 }
 
