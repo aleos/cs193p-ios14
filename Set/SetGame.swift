@@ -8,7 +8,7 @@
 import Foundation
 
 struct SetGame {
-    private(set) var cards: [Card] = {
+    private(set) var deck: [Card] = {
         var cards = [Card]()
         Card.Number.allCases.forEach { number in
             Card.Shape.allCases.forEach { shape in
@@ -19,9 +19,14 @@ struct SetGame {
                 }
             }
         }
-        return cards
+        return cards.shuffled()
     }()
+    private(set) var cards: [Card] = []
     private(set) var score = 0
+    
+    init() {
+        layFirstCards()
+    }
     
     mutating func choose(_ card: Card) {
         guard let chosenIndex = cards.firstIndex(where: { $0.id == card.id }) else { return }
@@ -40,6 +45,16 @@ struct SetGame {
                 cards.indices.forEach { cards[$0].isChosen = false }
             }
         }
+    }
+    
+    mutating func layMoreCards() {
+        let moreCards = deck.suffix(3)
+        cards.append(contentsOf: moreCards)
+        deck = deck.dropLast(3)
+    }
+    
+    mutating func layFirstCards() {
+        for _ in 0..<4 { layMoreCards() }
     }
     
     private mutating func incrementScore() {
