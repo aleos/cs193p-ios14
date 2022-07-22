@@ -45,6 +45,7 @@ struct CardView: View {
 //                if card.isFaceUp {
                     shape.fill().foregroundColor(.white)
                     shape.strokeBorder(lineWidth: DrawingConstants.lineWidth)
+                Face().foregroundColor(.red)
 //                } else if card.isMatched {
 //                    shape.opacity(0)
 //                } else {
@@ -52,10 +53,6 @@ struct CardView: View {
 //                }
             }
         }
-    }
-    
-    private func font(in size: CGSize) -> Font {
-        Font.system(size: min(size.width, size.height) * DrawingConstants.fontScale)
     }
     
     private struct DrawingConstants {
