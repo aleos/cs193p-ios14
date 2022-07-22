@@ -53,14 +53,14 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
     }
     
     private mutating func incrementScore() {
-            score += 2 * scoreTimeMultiplier
-            print("Score time multiplier = \(scoreTimeMultiplier)")
-        }
-        
-        private mutating func decrementScore() {
-            score -= 1 * scoreTimeMultiplier
-            print("Score time multiplier = \(scoreTimeMultiplier)")
-        }
+        score += 2 * scoreTimeMultiplier
+        print("Score time multiplier = \(scoreTimeMultiplier)")
+    }
+    
+    private mutating func decrementScore() {
+        score -= 1 * scoreTimeMultiplier
+        print("Score time multiplier = \(scoreTimeMultiplier)")
+    }
     
     init(numberOfPairsOfCards: Int, createCardContent: (Int) -> CardContent) {
         cards = []

@@ -1,0 +1,71 @@
+//
+//  SetGame.swift
+//  Set
+//
+//  Created by Alexander Ostrovsky on 22.07.2022.
+//
+
+import Foundation
+
+struct SetGame {
+    private(set) var cards: [Card]
+    private(set) var score = 0
+    
+    mutating func choose(_ card: Card) {
+        guard let chosenIndex = cards.firstIndex(where: { $0.id == card.id }) else { return }
+        
+        cards[chosenIndex].isChosen.toggle()
+        
+        let chosenCards = cards.filter(\.isChosen)
+        if chosenCards.count == 3 {
+            if chosenCards.isAllSameOrAllDifferent(\.number),
+               chosenCards.isAllSameOrAllDifferent(\.shape),
+               chosenCards.isAllSameOrAllDifferent(\.shading),
+               chosenCards.isAllSameOrAllDifferent(\.color)
+            {
+                cards = cards.filter { chosenCards.contains($0) }
+            } else {
+                cards.indices.forEach { cards[$0].isChosen = false }
+            }
+        }
+    }
+    
+    private mutating func incrementScore() {
+        
+    }
+    
+    private mutating func decrementScore() {
+
+    }
+    
+    struct Card: Hashable, Identifiable, Equatable {
+        enum Number: CaseIterable { case one, two, three }
+        enum Shape: CaseIterable { case diamond, squiggle, oval }
+        enum Shading: CaseIterable { case solid, striped, open }
+        enum Color: CaseIterable { case red, green, purple }
+
+        let number: Number
+        let shape: Shape
+        let shading: Shading
+        let color: Color
+        
+        var isChosen = false
+                
+        // Identifiable conformance
+        let id: ObjectIdentifier
+    }
+}
+
+extension Array where Element: Hashable {
+    func isAllSame<T: Equatable>(_ by: KeyPath<Element, T>) -> Bool {
+        return dropFirst().allSatisfy({ $0[keyPath: by] == first?[keyPath: by] })
+    }
+    
+    func isAllDifferent<T: Equatable>(_ by: KeyPath<Element, T>) -> Bool {
+        return Set(self).count == count
+    }
+    
+    func isAllSameOrAllDifferent<T: Equatable>(_ by: KeyPath<Element, T>) -> Bool {
+        return isAllSame(by) || isAllDifferent(by)
+    }
+}
