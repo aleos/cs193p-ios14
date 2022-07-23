@@ -14,7 +14,7 @@ struct SetGameView: View {
         NavigationView {
             VStack {
                 AspectVGrid(items: game.cards, aspectRatio: 2/3) { card in
-                    CardView(card: card, wrongSelection: game.wrongSelection)
+                    CardView(card: card, currentSetSelection: game.currentSetSelection)
                         .padding(4)
                         .onTapGesture {
                             game.choose(card)
@@ -44,14 +44,14 @@ struct SetGameView: View {
 
 struct CardView: View {
     let card: SetGameViewModel.Card
-    let wrongSelection: Bool
+    let currentSetSelection: SetGame.SetSelection
     
     private var borderColor: Color {
         if card.isSelected {
-            if wrongSelection {
-                return .red
-            } else {
-                return .accentColor
+            switch currentSetSelection {
+            case .matching: return .green
+            case .nonmatching: return .red
+            case .incomplete: return .accentColor
             }
         } else {
             return .secondary

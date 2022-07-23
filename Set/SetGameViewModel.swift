@@ -15,14 +15,15 @@ final class SetGameViewModel: ObservableObject {
     var cards: [Card] { game.cards }
     var score: Int { game.score }
     
-    var wrongSelection: Bool { cards.filter(\.isSelected).count >= 3 }
-    
+    var isSetSelected: Bool { game.isSetSelected }
+    var currentSetSelection: SetGame.SetSelection { game.currentSetSelection }
+
     func choose(_ card: Card) {
         game.choose(card)
     }
     
     func dealMoreCards() {
-        game.deadMoreCards()
+        game.dealMoreCards()
     }
     
     func newGame() {
