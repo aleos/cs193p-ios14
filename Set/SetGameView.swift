@@ -11,27 +11,38 @@ struct SetGameView: View {
     @ObservedObject var game: SetGameViewModel
     
     var body: some View {
-        VStack {
-            HStack(alignment: .firstTextBaseline) {
-//                Text(game.themeName).font(.largeTitle)
-                Text("Score: \(game.score)")
+        NavigationView {
+            VStack {
+                AspectVGrid(items: game.cards, aspectRatio: 2/3) { card in
+                    CardView(card: card)
+                        .foregroundColor(.gray)
+                        .padding(4)
+                        .onTapGesture {
+                            game.choose(card)
+                        }
+                }
+                .foregroundColor(game.themeForegroundColor)
+                Spacer()
+                Button {
+                    game.layMoreCards()
+                } label: {
+                    Image(systemName: "goforward.plus")
+                    .font(.largeTitle)
+                }
             }
-            AspectVGrid(items: game.cards, aspectRatio: 2/3) { card in
-                CardView(card: card)
-                    .padding(4)
-                    .onTapGesture {
-                        game.choose(card)
-                    }
-            }
-            .foregroundColor(game.themeForegroundColor)
-            Spacer()
-            Button {
-                game.newGame()
-            } label: {
-                Text("New Game").font(.largeTitle)
+            .padding(.horizontal)
+            .navigationTitle("Score: \(game.score)")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                Button {
+                    game.newGame()
+                } label: {
+                    Image(systemName: "repeat")
+                        .font(.title2)
+                }
+
             }
         }
-        .padding(.horizontal)
     }
 }
 
@@ -42,15 +53,10 @@ struct CardView: View {
         GeometryReader { geometry in
             ZStack {
                 let shape = RoundedRectangle(cornerRadius: DrawingConstants.cornerRadius)
-//                if card.isFaceUp {
-                    shape.fill().foregroundColor(.white)
-                    shape.strokeBorder(lineWidth: DrawingConstants.lineWidth)
+                shape.fill().foregroundColor(.white)
+                shape.strokeBorder(lineWidth: DrawingConstants.lineWidth)
                 Face(number: card.number, shape: card.shape, shading: card.shading, color: card.color)
-//                } else if card.isMatched {
-//                    shape.opacity(0)
-//                } else {
-//                    shape.fill()
-//                }
+                    .padding(4)
             }
         }
     }
@@ -67,5 +73,7 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         SetGameView(game: SetGameViewModel())
             .preferredColorScheme(.dark)
+        SetGameView(game: SetGameViewModel())
+            .preferredColorScheme(.light)
     }
 }

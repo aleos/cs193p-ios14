@@ -25,20 +25,24 @@ struct Face: View {
                 VStack {
                     HStack {
                         CardShapeView(number: number, shape: shape, shading: shading, color: color)
-                        Spacer(minLength: geometry.size.width * 0.5)
+                        Spacer(minLength: geometry.size.width * DrawingConstants.miniShapeScale)
                         CardShapeView(number: number, shape: shape, shading: shading, color: color)
                         
                     }
                     Spacer(minLength: geometry.size.height * 0.5)
                     HStack {
                         CardShapeView(number: number, shape: shape, shading: shading, color: color)
-                        Spacer(minLength: geometry.size.width * 0.5)
+                        Spacer(minLength: geometry.size.width * DrawingConstants.miniShapeScale)
                         CardShapeView(number: number, shape: shape, shading: shading, color: color)
                         
                     }
                 }
             }
         }
+    }
+    
+    private struct DrawingConstants {
+        static let miniShapeScale = 0.4
     }
 }
 
@@ -51,22 +55,28 @@ struct CardShapeView: View {
     var body: some View {
         GeometryReader { geometry in
             Group {
-                let outlineLineWidth = max(1.0, round(geometry.size.width / 64))
                 let cardShape = CardShape(shape: shape, number: number)
                 
                 switch shading {
                 case .open:
-                    cardShape.stroke(lineWidth: outlineLineWidth)
+                    cardShape.stroke(lineWidth: DrawingConstants.outlineLineWidth(viewSize: geometry.size))
                 case .solid:
                     cardShape
                 case .striped:
-                    StripesShape(distance: max(2.0, geometry.size.width / 32))
-                        .stroke(lineWidth: max(1.0, outlineLineWidth / 2))
+                    StripesShape(distance: max(DrawingConstants.minStripesDistance, geometry.size.width / 32))
+                        .stroke(lineWidth: max(DrawingConstants.minLineWidth, DrawingConstants.outlineLineWidth(viewSize: geometry.size) / 2.0))
                         .clipShape(cardShape)
-                    cardShape.stroke(lineWidth: outlineLineWidth)
+                    cardShape.stroke(lineWidth: DrawingConstants.outlineLineWidth(viewSize: geometry.size))
                 }
             }
             .foregroundColor(Color(from: color))
+        }
+    }
+    private struct DrawingConstants {
+        static let minLineWidth = 1.0
+        static let minStripesDistance = 2.0
+        static func outlineLineWidth(viewSize size: CGSize) -> CGFloat {
+            max(minLineWidth, round(size.width / 64))
         }
     }
 }

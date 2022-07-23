@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class SetGameViewModel: ObservableObject {
+final class SetGameViewModel: ObservableObject {
     typealias Card = SetGame.Card
     
     @Published private var game = SetGame()
@@ -19,6 +19,10 @@ class SetGameViewModel: ObservableObject {
 
     func choose(_ card: Card) {
         game.choose(card)
+    }
+    
+    func layMoreCards() {
+        game.layMoreCards()
     }
     
     func newGame() {
