@@ -15,16 +15,14 @@ struct SetGameView: View {
             VStack {
                 AspectVGrid(items: game.cards, aspectRatio: 2/3) { card in
                     CardView(card: card)
-                        .foregroundColor(.gray)
                         .padding(4)
                         .onTapGesture {
                             game.choose(card)
                         }
                 }
-                .foregroundColor(game.themeForegroundColor)
                 Spacer()
                 Button {
-                    game.layMoreCards()
+                    game.layCards()
                 } label: {
                     Image(systemName: "goforward.plus")
                     .font(.largeTitle)
@@ -54,7 +52,8 @@ struct CardView: View {
             ZStack {
                 let shape = RoundedRectangle(cornerRadius: DrawingConstants.cornerRadius)
                 shape.fill().foregroundColor(.white)
-                shape.strokeBorder(lineWidth: DrawingConstants.lineWidth)
+                let color: Color = card.isSelected ? .accentColor : Color.secondary
+                shape.strokeBorder(lineWidth: DrawingConstants.lineWidth).foregroundColor(color)
                 Face(number: card.number, shape: card.shape, shading: card.shading, color: card.color)
                     .padding(4)
             }

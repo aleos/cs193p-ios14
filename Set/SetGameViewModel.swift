@@ -15,14 +15,12 @@ final class SetGameViewModel: ObservableObject {
     var cards: [Card] { game.cards }
     var score: Int { game.score }
     
-    var themeForegroundColor: Color { .white }
-
     func choose(_ card: Card) {
         game.choose(card)
     }
     
-    func layMoreCards() {
-        game.layMoreCards()
+    func layCards() {
+        game.layCards()
     }
     
     func newGame() {

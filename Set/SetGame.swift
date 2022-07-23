@@ -25,36 +25,37 @@ struct SetGame {
     private(set) var score = 0
     
     init() {
-        layFirstCards()
+        layCards()
     }
     
     mutating func choose(_ card: Card) {
         guard let chosenIndex = cards.firstIndex(where: { $0.id == card.id }) else { return }
         
-        cards[chosenIndex].isChosen.toggle()
+        cards[chosenIndex].isSelected.toggle()
         
-        let chosenCards = cards.filter(\.isChosen)
-        if chosenCards.count == 3 {
-            if chosenCards.isAllSameOrAllDifferent(\.number),
-               chosenCards.isAllSameOrAllDifferent(\.shape),
-               chosenCards.isAllSameOrAllDifferent(\.shading),
-               chosenCards.isAllSameOrAllDifferent(\.color)
+        let selectedCards = cards.filter(\.isSelected)
+        if selectedCards.count == 3 {
+            if selectedCards.isAllSameOrAllDifferent(\.number),
+               selectedCards.isAllSameOrAllDifferent(\.shape),
+               selectedCards.isAllSameOrAllDifferent(\.shading),
+               selectedCards.isAllSameOrAllDifferent(\.color)
             {
-                cards = cards.filter { chosenCards.contains($0) }
-            } else {
-                cards.indices.forEach { cards[$0].isChosen = false }
+                cards = cards.filter { !selectedCards.contains($0) }
+                if cards.count < 12 {
+                    layCards()
+                }
             }
+            cards.indices.forEach { cards[$0].isSelected = false }
         }
     }
     
-    mutating func layMoreCards() {
-        let moreCards = deck.suffix(3)
-        cards.append(contentsOf: moreCards)
-        deck = deck.dropLast(3)
-    }
-    
-    mutating func layFirstCards() {
-        for _ in 0..<4 { layMoreCards() }
+    mutating func layCards() {
+        guard !deck.isEmpty else { return }
+        repeat {
+            let moreCards = deck.suffix(3)
+            cards.append(contentsOf: moreCards)
+            deck = deck.dropLast(3)
+        } while cards.count < 12
     }
     
     private mutating func incrementScore() {
@@ -76,7 +77,7 @@ struct SetGame {
         let shading: Shading
         let color: Color
         
-        var isChosen = false
+        var isSelected = false
                 
         // Identifiable conformance
         let id = UUID()
@@ -88,11 +89,11 @@ extension Array where Element: Hashable {
         return dropFirst().allSatisfy({ $0[keyPath: by] == first?[keyPath: by] })
     }
     
-    func isAllDifferent<T: Equatable>(_ by: KeyPath<Element, T>) -> Bool {
-        return Set(self).count == count
+    func isAllDifferent<T: Hashable>(_ by: KeyPath<Element, T>) -> Bool {
+        return Set(map({ $0[keyPath: by] })).count == count
     }
     
-    func isAllSameOrAllDifferent<T: Equatable>(_ by: KeyPath<Element, T>) -> Bool {
+    func isAllSameOrAllDifferent<T: Hashable>(_ by: KeyPath<Element, T>) -> Bool {
         return isAllSame(by) || isAllDifferent(by)
     }
 }
