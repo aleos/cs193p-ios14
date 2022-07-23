@@ -46,10 +46,9 @@ struct SetGame {
     mutating func choose(_ card: Card) {
         guard let selectedIndex = cards.firstIndex(where: { $0.id == card.id }) else { return }
         
-        let lastSelectedCards = selectedCards
-        
         switch currentSetSelection {
         case .matching:
+            let lastSelectedCards = selectedCards
             // When any card is touched on and there are already 3 matching Set cards selected
             if !cards[selectedIndex].isSelected {
                 // if the touched card was not part of the matching Set, then select that card
@@ -62,6 +61,12 @@ struct SetGame {
             cards[selectedIndex].isSelected = true
         case .incomplete:
             cards[selectedIndex].isSelected.toggle()
+        }
+        
+        switch currentSetSelection {
+        case .matching: incrementScore()
+        case .nonmatching: decrementScore()
+        case .incomplete: break
         }
         
         if cards.count < 12 {
@@ -79,11 +84,11 @@ struct SetGame {
     }
     
     private mutating func incrementScore() {
-        
+        score += 1
     }
     
     private mutating func decrementScore() {
-
+        score -= 1
     }
     
     struct Card: Hashable, Identifiable, Equatable {
