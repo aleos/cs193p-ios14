@@ -27,7 +27,7 @@ struct Face: View {
 }
 
 struct OvalShape: Shape {
-    var oval: Path {
+    static let oval: Path = {
         let size = CGSize(width: 0.5, height: 0.25)
         
         var path = Path()
@@ -35,9 +35,9 @@ struct OvalShape: Shape {
         path.addRoundedRect(in: CGRect(x: -size.width / 2, y: -size.height / 2, width: size.width, height: size.height), cornerSize: CGSize(width: size.height / 2, height: size.height / 2))
         
         return path
-    }
+    }()
     
-    var diamond: Path {
+    static let diamond: Path = {
         let size = CGSize(width: 0.5, height: 0.25)
 
         var path = Path()
@@ -49,13 +49,26 @@ struct OvalShape: Shape {
         path.closeSubpath()
         
         return path
-    }
+    }()
+    
+    static let squiggle: Path = {
+        let size = CGSize(width: 0.5, height: 0.25)
+
+        var path = Path()
+        
+        path.move(to: CGPoint(x: -size.width * 0.4, y: 0))
+        path.addQuadCurve(to: CGPoint(x: 0, y: 0), control: CGPoint(x: -size.width * 0.2, y: -size.width / 4))
+        path.addQuadCurve(to: CGPoint(x: size.width * 0.4, y: 0), control: CGPoint(x: size.width * 0.2, y: size.width / 4))
+        path = path.strokedPath(StrokeStyle(lineWidth: 0.1, lineCap: CGLineCap.round))
+        
+        return path
+    }()
     
     func path(in rect: CGRect) -> Path {
         var path = Path()
-        path.addPath(diamond, transform: CGAffineTransform(translationX: rect.midX, y: rect.midY).scaledBy(x: rect.width, y: rect.width))
-        path.addPath(oval, transform: CGAffineTransform(translationX: rect.midX, y: rect.midY - rect.height / 5).scaledBy(x: rect.width, y: rect.width))
-        path.addPath(oval, transform: CGAffineTransform(translationX: rect.midX, y: rect.midY + rect.height / 5).scaledBy(x: rect.width, y: rect.width))
+        path.addPath(Self.diamond, transform: CGAffineTransform(translationX: rect.midX, y: rect.midY).scaledBy(x: rect.width, y: rect.width))
+        path.addPath(Self.oval, transform: CGAffineTransform(translationX: rect.midX, y: rect.midY - rect.height / 5).scaledBy(x: rect.width, y: rect.width))
+        path.addPath(Self.squiggle, transform: CGAffineTransform(translationX: rect.midX, y: rect.midY + rect.height / 5).scaledBy(x: rect.width, y: rect.width))
         return path
     }
 }
