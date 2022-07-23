@@ -25,16 +25,22 @@ struct SetGame {
     private(set) var score = 0
     
     init() {
-        layCards()
+        deadMoreCards()
     }
     
     mutating func choose(_ card: Card) {
-        guard let chosenIndex = cards.firstIndex(where: { $0.id == card.id }) else { return }
+        guard let selectedIndex = cards.firstIndex(where: { $0.id == card.id }) else { return }
         
-        cards[chosenIndex].isSelected.toggle()
+        cards[selectedIndex].isSelected.toggle()
         
         let selectedCards = cards.filter(\.isSelected)
-        if selectedCards.count == 3 {
+        
+        if selectedCards.count > 3 {
+            cards.indices.forEach { i in
+                guard i != selectedIndex else { return }
+                cards[i].isSelected = false
+            }
+        } else if selectedCards.count == 3 {
             if selectedCards.isAllSameOrAllDifferent(\.number),
                selectedCards.isAllSameOrAllDifferent(\.shape),
                selectedCards.isAllSameOrAllDifferent(\.shading),
@@ -42,14 +48,13 @@ struct SetGame {
             {
                 cards = cards.filter { !selectedCards.contains($0) }
                 if cards.count < 12 {
-                    layCards()
+                    deadMoreCards()
                 }
             }
-            cards.indices.forEach { cards[$0].isSelected = false }
         }
     }
     
-    mutating func layCards() {
+    mutating func deadMoreCards() {
         guard !deck.isEmpty else { return }
         repeat {
             let moreCards = deck.suffix(3)

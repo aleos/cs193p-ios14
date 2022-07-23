@@ -14,7 +14,7 @@ struct SetGameView: View {
         NavigationView {
             VStack {
                 AspectVGrid(items: game.cards, aspectRatio: 2/3) { card in
-                    CardView(card: card)
+                    CardView(card: card, wrongSelection: game.wrongSelection)
                         .padding(4)
                         .onTapGesture {
                             game.choose(card)
@@ -22,7 +22,7 @@ struct SetGameView: View {
                 }
                 Spacer()
                 Button {
-                    game.layCards()
+                    game.dealMoreCards()
                 } label: {
                     Text("Deal 3 More Cards")
                     .font(.title)
@@ -44,14 +44,26 @@ struct SetGameView: View {
 
 struct CardView: View {
     let card: SetGameViewModel.Card
+    let wrongSelection: Bool
+    
+    private var borderColor: Color {
+        if card.isSelected {
+            if wrongSelection {
+                return .red
+            } else {
+                return .accentColor
+            }
+        } else {
+            return .secondary
+        }
+    }
     
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 let shape = RoundedRectangle(cornerRadius: DrawingConstants.cornerRadius)
                 shape.fill().foregroundColor(.white)
-                let color: Color = card.isSelected ? .accentColor : Color.secondary
-                shape.strokeBorder(lineWidth: DrawingConstants.lineWidth).foregroundColor(color)
+                shape.strokeBorder(lineWidth: DrawingConstants.lineWidth).foregroundColor(borderColor)
                 Face(number: card.number, shape: card.shape, shading: card.shading, color: card.color)
                     .padding(4)
             }
