@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct Face: View {
-    typealias Card = SetGameViewModel.Card
     
     let number: SetGameViewModel.Card.Number
     let shape: SetGameViewModel.Card.Shape
@@ -51,18 +50,28 @@ struct CardShapeView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            VStack {
-                Spacer()
-                CardShape(shape: shape, number: number)
-                    .stroke(lineWidth: max(1.0, round(geometry.size.width / 50)))
-                    .foregroundColor(Color(from: color))
-                Spacer()
+            Group {
+                let outlineLineWidth = max(1.0, round(geometry.size.width / 64))
+                let cardShape = CardShape(shape: shape, number: number)
+                
+                switch shading {
+                case .open:
+                    cardShape.stroke(lineWidth: outlineLineWidth)
+                case .solid:
+                    cardShape
+                case .striped:
+                    StripesShape(distance: max(2.0, geometry.size.width / 32))
+                        .stroke(lineWidth: max(1.0, outlineLineWidth / 2))
+                        .clipShape(cardShape)
+                    cardShape.stroke(lineWidth: outlineLineWidth)
+                }
             }
+            .foregroundColor(Color(from: color))
         }
     }
 }
 
-struct CardShape: Shape {
+private struct CardShape: Shape {
     let shape: SetGameViewModel.Card.Shape
     let number: SetGameViewModel.Card.Number
     
@@ -156,6 +165,6 @@ private extension Int {
 
 struct Previews_Face_Previews: PreviewProvider {
     static var previews: some View {
-        Face(number: .three, shape: .oval, shading: .open, color: .purple)
+        Face(number: .three, shape: .squiggle, shading: .striped, color: .purple)
     }
 }

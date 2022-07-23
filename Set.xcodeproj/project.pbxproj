@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		57882B35288C199A00FB681E /* StripesShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57882B34288C199A00FB681E /* StripesShape.swift */; };
 		5790EBB22888ACD900639B8C /* SetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5790EBB12888ACD900639B8C /* SetApp.swift */; };
 		5790EBB42888ACD900639B8C /* SetGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5790EBB32888ACD900639B8C /* SetGameView.swift */; };
 		5790EBB62888ACDA00639B8C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5790EBB52888ACDA00639B8C /* Assets.xcassets */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		57882B34288C199A00FB681E /* StripesShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripesShape.swift; sourceTree = "<group>"; };
 		5790EBAE2888ACD900639B8C /* Set.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Set.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5790EBB12888ACD900639B8C /* SetApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetApp.swift; sourceTree = "<group>"; };
 		5790EBB32888ACD900639B8C /* SetGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetGameView.swift; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 				5790EBC3288A9C9400639B8C /* SetGameViewModel.swift */,
 				5790EBB32888ACD900639B8C /* SetGameView.swift */,
 				5790EBC5288AB01500639B8C /* Face.swift */,
+				57882B34288C199A00FB681E /* StripesShape.swift */,
 				5790EBC1288A9BE900639B8C /* AspectVGrid.swift */,
 				5790EBB52888ACDA00639B8C /* Assets.xcassets */,
 				5790EBB72888ACDA00639B8C /* Preview Content */,
@@ -151,6 +154,7 @@
 			files = (
 				5790EBC2288A9BE900639B8C /* AspectVGrid.swift in Sources */,
 				5790EBB42888ACD900639B8C /* SetGameView.swift in Sources */,
+				57882B35288C199A00FB681E /* StripesShape.swift in Sources */,
 				5790EBC0288A640B00639B8C /* SetGame.swift in Sources */,
 				5790EBB22888ACD900639B8C /* SetApp.swift in Sources */,
 				5790EBC6288AB01500639B8C /* Face.swift in Sources */,
