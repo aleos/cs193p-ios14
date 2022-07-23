@@ -17,11 +17,44 @@ struct Face: View {
     
     var body: some View {
         GeometryReader { geometry in
+            ZStack {
+                VStack {
+                    Spacer()
+                    CardShapeView(number: number, shape: shape, shading: shading, color: color)
+                    Spacer()
+                }
+                VStack {
+                    HStack {
+                        CardShapeView(number: number, shape: shape, shading: shading, color: color)
+                        Spacer(minLength: geometry.size.width * 0.5)
+                        CardShapeView(number: number, shape: shape, shading: shading, color: color)
+                        
+                    }
+                    Spacer(minLength: geometry.size.height * 0.5)
+                    HStack {
+                        CardShapeView(number: number, shape: shape, shading: shading, color: color)
+                        Spacer(minLength: geometry.size.width * 0.5)
+                        CardShapeView(number: number, shape: shape, shading: shading, color: color)
+                        
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct CardShapeView: View {
+    let number: SetGameViewModel.Card.Number
+    let shape: SetGameViewModel.Card.Shape
+    let shading: SetGameViewModel.Card.Shading
+    let color: SetGameViewModel.Card.Color
+
+    var body: some View {
+        GeometryReader { geometry in
             VStack {
                 Spacer()
                 CardShape(shape: shape, number: number)
-                    .stroke(lineWidth: max(2.0, round(geometry.size.width / 100)))
-                    .frame(height: geometry.size.height / 2, alignment: .center)
+                    .stroke(lineWidth: max(1.0, round(geometry.size.width / 50)))
                     .foregroundColor(Color(from: color))
                 Spacer()
             }
