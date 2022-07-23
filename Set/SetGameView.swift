@@ -24,8 +24,8 @@ struct SetGameView: View {
                 Button {
                     game.layCards()
                 } label: {
-                    Image(systemName: "goforward.plus")
-                    .font(.largeTitle)
+                    Text("Deal 3 More Cards")
+                    .font(.title)
                 }
             }
             .padding(.horizontal)
@@ -35,10 +35,8 @@ struct SetGameView: View {
                 Button {
                     game.newGame()
                 } label: {
-                    Image(systemName: "repeat")
-                        .font(.title2)
+                    Text("New Game")
                 }
-
             }
         }
     }
