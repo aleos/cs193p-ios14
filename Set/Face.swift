@@ -8,26 +8,32 @@
 import SwiftUI
 
 struct Face: View {
-    let number: SetGame.Card.Number
-    let shape: SetGame.Card.Shape
-    let shading: SetGame.Card.Shading
-    let color: SetGame.Card.Color
+    typealias Card = SetGameViewModel.Card
+    
+    let number: SetGameViewModel.Card.Number
+    let shape: SetGameViewModel.Card.Shape
+    let shading: SetGameViewModel.Card.Shading
+    let color: SetGameViewModel.Card.Color
     
     var body: some View {
         GeometryReader { geometry in
-            OvalShape()
-                .stroke(lineWidth: max(2.0, round(geometry.size.width / 100)))
-                .foregroundColor(Color(from: color))
+            VStack {
+                Spacer()
+                CardShape(shape: shape, number: number)
+                    .stroke(lineWidth: max(2.0, round(geometry.size.width / 100)))
+                    .frame(height: geometry.size.height / 2, alignment: .center)
+                    .foregroundColor(Color(from: color))
+                Spacer()
+            }
         }
-//        GeometryReader { geometry in
-//            Path() { path in
-//            }.foregroundColor(Color(from: color))
-//        }
     }
 }
 
-struct OvalShape: Shape {
-    static let oval: Path = {
+struct CardShape: Shape {
+    let shape: SetGameViewModel.Card.Shape
+    let number: SetGameViewModel.Card.Number
+    
+    private static let oval: Path = {
         let size = CGSize(width: 0.5, height: 0.25)
         
         var path = Path()
@@ -37,7 +43,7 @@ struct OvalShape: Shape {
         return path
     }()
     
-    static let diamond: Path = {
+    private static let diamond: Path = {
         let size = CGSize(width: 0.5, height: 0.25)
 
         var path = Path()
@@ -51,24 +57,44 @@ struct OvalShape: Shape {
         return path
     }()
     
-    static let squiggle: Path = {
+    private static let squiggle: Path = {
+        struct Constants {
+            static let lineWidth = 0.12
+        }
+        
         let size = CGSize(width: 0.5, height: 0.25)
 
         var path = Path()
         
-        path.move(to: CGPoint(x: -size.width * 0.4, y: 0))
-        path.addQuadCurve(to: CGPoint(x: 0, y: 0), control: CGPoint(x: -size.width * 0.2, y: -size.width / 4))
-        path.addQuadCurve(to: CGPoint(x: size.width * 0.4, y: 0), control: CGPoint(x: size.width * 0.2, y: size.width / 4))
-        path = path.strokedPath(StrokeStyle(lineWidth: 0.1, lineCap: CGLineCap.round))
+        path.move(to: CGPoint(x: -size.width * (0.5 - Constants.lineWidth), y: 0))
+        path.addQuadCurve(to: CGPoint(x: 0, y: 0), control: CGPoint(x: -size.width * (0.25 - Constants.lineWidth / 2), y: -size.width / 4))
+        path.addQuadCurve(to: CGPoint(x: size.width * (0.5 - Constants.lineWidth), y: 0), control: CGPoint(x: size.width * (0.25 - Constants.lineWidth / 2), y: size.width / 4))
+        path = path.strokedPath(StrokeStyle(lineWidth: Constants.lineWidth, lineCap: CGLineCap.round))
         
         return path
     }()
     
     func path(in rect: CGRect) -> Path {
+        let shapePath: Path = {
+            switch shape {
+            case .diamond: return Self.diamond
+            case .squiggle: return Self.squiggle
+            case .oval: return Self.oval
+            }
+        }()
+        let shapesCount = Int(number)
+        let shapeHeight = rect.width / 3
+        let maxDistance = shapeHeight * CGFloat(shapesCount - 1)
+        let minOffset = -maxDistance / 2
         var path = Path()
-        path.addPath(Self.diamond, transform: CGAffineTransform(translationX: rect.midX, y: rect.midY).scaledBy(x: rect.width, y: rect.width))
-        path.addPath(Self.oval, transform: CGAffineTransform(translationX: rect.midX, y: rect.midY - rect.height / 5).scaledBy(x: rect.width, y: rect.width))
-        path.addPath(Self.squiggle, transform: CGAffineTransform(translationX: rect.midX, y: rect.midY + rect.height / 5).scaledBy(x: rect.width, y: rect.width))
+        for i in 0..<shapesCount {
+            let transform = CGAffineTransform(
+                translationX: rect.midX,
+                y: rect.midY + minOffset + shapeHeight * CGFloat(i)
+            ).scaledBy(x: rect.width, y: rect.width)
+            path.addPath(shapePath.applying(transform))
+        }
+        
         return path
     }
 }
