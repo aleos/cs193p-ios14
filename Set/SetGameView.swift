@@ -73,8 +73,6 @@ struct CardView: View {
     private struct DrawingConstants {
         static let cornerRadius = 10.0
         static let lineWidth = 3.0
-        static let fontScale = 0.7
-        static let circleOpacity = 0.5
     }
 }
 
